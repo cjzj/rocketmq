@@ -111,7 +111,6 @@ public class TopicListSubCommand implements SubCommand {
             }
         } catch (Exception e) {
             throw new SubCommandException(this.getClass().getSimpleName() + " command failed", e);
-        } finally {
             defaultMQAdminExt.shutdown();
         }
     }

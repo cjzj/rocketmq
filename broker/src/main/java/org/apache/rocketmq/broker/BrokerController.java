@@ -821,48 +821,58 @@ public class BrokerController {
         return this.brokerConfig.getBrokerIP1() + ":" + this.nettyServerConfig.getListenPort();
     }
 
+    //启动broker时调用
     public void start() throws Exception {
+    	//启动消息存储
         if (this.messageStore != null) {
             this.messageStore.start();
         }
 
+        //TODO
         if (this.remotingServer != null) {
             this.remotingServer.start();
         }
 
+        //TODO
         if (this.fastRemotingServer != null) {
             this.fastRemotingServer.start();
         }
 
+        //TODO
         if (this.fileWatchService != null) {
             this.fileWatchService.start();
         }
 
+        //TODO
         if (this.brokerOuterAPI != null) {
             this.brokerOuterAPI.start();
         }
 
+        //TODO
         if (this.pullRequestHoldService != null) {
             this.pullRequestHoldService.start();
         }
 
+        //TODO
         if (this.clientHousekeepingService != null) {
             this.clientHousekeepingService.start();
         }
 
+        //TODO
         if (this.filterServerManager != null) {
             this.filterServerManager.start();
         }
 
+        //DLedger-RocketMQ 基于Raft协议的commit log存储库
         if (!messageStoreConfig.isEnableDLegerCommitLog()) {
             startProcessorByHa(messageStoreConfig.getBrokerRole());
             handleSlaveSynchronize(messageStoreConfig.getBrokerRole());
         }
 
-
-
+        //注册broker到 name server 服务上
         this.registerBrokerAll(true, false, true);
 
+        //周期性注册broker到NameServer ???
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -875,10 +885,12 @@ public class BrokerController {
             }
         }, 1000 * 10, Math.max(10000, Math.min(brokerConfig.getRegisterNameServerPeriod(), 60000)), TimeUnit.MILLISECONDS);
 
+        //TODO
         if (this.brokerStatsManager != null) {
             this.brokerStatsManager.start();
         }
 
+        //TODO
         if (this.brokerFastFailure != null) {
             this.brokerFastFailure.start();
         }
@@ -928,6 +940,7 @@ public class BrokerController {
         }
     }
 
+    //将 broker注册到 NameServer上
     private void doRegisterBrokerAll(boolean checkOrderConfig, boolean oneway,
         TopicConfigSerializeWrapper topicConfigWrapper) {
         List<RegisterBrokerResult> registerBrokerResultList = this.brokerOuterAPI.registerBrokerAll(

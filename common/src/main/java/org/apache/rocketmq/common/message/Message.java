@@ -29,6 +29,7 @@ public class Message implements Serializable {
     private int flag;
     private Map<String, String> properties;
     private byte[] body;
+    //事物id
     private String transactionId;
 
     public Message() {
