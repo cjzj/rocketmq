@@ -872,7 +872,7 @@ public class BrokerController {
         //注册broker到 name server 服务上
         this.registerBrokerAll(true, false, true);
 
-        //周期性注册broker到NameServer ???
+        //周期性注册broker到NameServer -- 心跳保活机制
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -943,6 +943,7 @@ public class BrokerController {
     //将 broker注册到 NameServer上
     private void doRegisterBrokerAll(boolean checkOrderConfig, boolean oneway,
         TopicConfigSerializeWrapper topicConfigWrapper) {
+        /**向 name server 伪集群中的每一台name server 中注册broker 信息*/
         List<RegisterBrokerResult> registerBrokerResultList = this.brokerOuterAPI.registerBrokerAll(
             this.brokerConfig.getBrokerClusterName(),
             this.getBrokerAddr(),
