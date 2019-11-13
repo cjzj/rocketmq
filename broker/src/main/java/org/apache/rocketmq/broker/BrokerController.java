@@ -227,6 +227,7 @@ public class BrokerController {
         return queryThreadPoolQueue;
     }
 
+    //broker 初始化代码， 关键节点之一
     public boolean initialize() throws CloneNotSupportedException {
         boolean result = this.topicConfigManager.load();
 
