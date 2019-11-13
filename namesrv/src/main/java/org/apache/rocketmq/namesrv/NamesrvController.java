@@ -73,17 +73,22 @@ public class NamesrvController {
         this.configuration.setStorePathFromConfig(this.namesrvConfig, "configStorePath");
     }
 
+    /**name server 初始化*/
     public boolean initialize() {
-
+    	/**加载k-v配置*/
         this.kvConfigManager.load();
 
+        /**远程通信服务*/
         this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.brokerHousekeepingService);
-
+        
+        /**netty io 线程池*/
         this.remotingExecutor =
             Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
-
+        
+        /**注册请求处理器(netty) 看是否是单机request 还是 集群request*/
         this.registerProcessor();
 
+        /**定时清除不存活的 broker*/
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -92,6 +97,7 @@ public class NamesrvController {
             }
         }, 5, 10, TimeUnit.SECONDS);
 
+        /**定时打印 configTable 内容日志*/
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
